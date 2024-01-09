@@ -3,7 +3,7 @@
 //https://stackoverflow.com/questions/61518284/error-non-const-static-data-member-must-be-initialized-out-of-line
 int Bank::id_generator = 0;
 
-Bank::Bank() {
+Bank::Bank(): _liquidity(0) {
     std::cout << "HELLO FROM BANK\n";
 }
 
@@ -22,6 +22,7 @@ void Bank::set_client_account(Account account) {
 }
 
 int Bank::make_account() {
+    std::cout << "-------------------CREATING ACCOUNT-------------------" << std::endl;
     Account account = create_account(id_generator);
     set_client_account(account);
     id_generator++;
@@ -29,10 +30,49 @@ int Bank::make_account() {
 }
 
 void Bank::deposit(int id, int amount) {
-    std::map<int, Account>::iterator account = get_client_account().find(id);
-
+    auto account = get_client_account().find(id);
+    std::cout << "-------------------DEPOSITING-------------------" << std::endl;
     if (account == get_client_account().end()) {
-        throw std::runtime_error("Account is not yet created\n");
+        throw std::runtime_error("Account is not yet created\n"); //TODO try to use std::cerr instead
+    }
+    int inflow = amount * 0.05;
+    int after_tax = amount - inflow;
+    account->second.set_value(account->second.get_value() + after_tax);
+    this->_liquidity += inflow;
+    std::cout << "TEST: " << account->second.get_value() << std::endl;
+}
+
+void Bank::withdraw(int id, int amount) {
+    auto account = get_client_account().find(id);
+    if (account == get_client_account().end()) {
+        std::cerr << "Not found account with id: " << id << std::endl;
+        return;
+    }
+    if (amount > account->second.get_value()) {
+        std::cerr << "You don't have enough money to withdraw" << std::endl;
+        return;
+    }
+    account->second.set_value(account->second.get_value() - amount);
+}
+
+void Bank::delete_account(int id) {
+    auto account = get_client_account().find(id);
+    if (account == get_client_account().end()) {
+        std::cerr << "Not found account with id: " << id << std::endl;
+        return;
+    }
+    this->_clientAccount.erase(account);
+}
+
+void Bank::take_loan(int id, int amount) {
+    auto account = get_client_account().find(id);
+    if (account == get_client_account().end()) {
+        std::cerr << "Not found account with id: " << id << std::endl;
+        return;
+    }
+    if (amount <= 0) {
+        std::cerr << "Loan can't be 0 or negative" << std::endl;
+        return;
     }
 
 }

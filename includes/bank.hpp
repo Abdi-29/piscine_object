@@ -26,6 +26,9 @@ public:
     void set_client_account(Account account);
     void set_liquidity(int liquidity);
     void deposit(int id, int amount);
+    void withdraw(int id, int amount);
+    void delete_account(int id);
+    void take_loan(int id, int amount);
 };
 
 std::ostream& operator << (std::ostream& p_os, const Bank& p_bank);

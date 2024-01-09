@@ -7,6 +7,6 @@ int main() {
     int account2 = bank.make_account();
 
     bank.deposit(account1, 4000);
-    std::cout << "testing " << account1 << std::endl;
+    std::cout << bank;
     return 0;
 }
